@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');const fs=require('node:fs');
+const {isAddress,validateFunding}=require('./funding');
+const data=JSON.parse(fs.readFileSync('FUNDING.json','utf8'));
+const rows=validateFunding(data);
+assert(rows.length>=2);
+assert(rows.every(row=>isAddress(row.owner)));
+assert.equal(isAddress('0x123'),false);
+assert.throws(()=>validateFunding({drips:{ethereum:{ownedBy:'not-an-address'}}}));
+assert.throws(()=>validateFunding({drips:{}}));
+console.log('Funding metadata validation passed');
